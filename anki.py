@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import genanki
-
+import random
 base_url = "https://jpdb.io"
 url = "https://jpdb.io/novel/1589/baka-to-tesuto-to-shoukanjuu/vocabulary-list"
 
@@ -66,7 +66,7 @@ while url:
 
     # Add a 1 second delay before the next iteration
     if next_url:
-        time.sleep(0.05)
+        time.sleep(0.5)
 
     # Set url for next iteration or break if no next page
     url = next_url
@@ -77,8 +77,11 @@ for idx, (k, v) in enumerate(vocab_dict.items(), 1):
     print(f"{idx}. {k}: {v}")
 
 # After scraping, create an Anki deck
+
+model_id = random.randint(1, 2**32-1)
+deck_id = random.randint(1, 2**32-1)
 my_model = genanki.Model(
-    1607392319,
+    model_id,
     'Simple Model',
     fields=[
         {'name': 'Question'},
@@ -93,7 +96,7 @@ my_model = genanki.Model(
     ])
 
 my_deck = genanki.Deck(
-    2059400110,
+    deck_id,
     'JPDB Vocabulary Export'
 )
 
