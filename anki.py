@@ -1,9 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+import genanki
 
 base_url = "https://jpdb.io"
-url = "https://jpdb.io/visual-novel/993/nursery-rhyme/vocabulary-list"
+url = "https://jpdb.io/novel/1589/baka-to-tesuto-to-shoukanjuu/vocabulary-list"
 
 vocab_dict = {}  # Make vocab_dict global for all pages
 
@@ -65,7 +66,7 @@ while url:
 
     # Add a 1 second delay before the next iteration
     if next_url:
-        time.sleep(1)
+        time.sleep(0.05)
 
     # Set url for next iteration or break if no next page
     url = next_url
@@ -74,3 +75,34 @@ while url:
 print("All extracted vocabulary entries:")
 for idx, (k, v) in enumerate(vocab_dict.items(), 1):
     print(f"{idx}. {k}: {v}")
+
+# After scraping, create an Anki deck
+my_model = genanki.Model(
+    1607392319,
+    'Simple Model',
+    fields=[
+        {'name': 'Question'},
+        {'name': 'Answer'},
+    ],
+    templates=[
+        {
+            'name': 'Card 1',
+            'qfmt': '{{Question}}',
+            'afmt': '{{FrontSide}}<hr id="answer">{{Answer}}',
+        },
+    ])
+
+my_deck = genanki.Deck(
+    2059400110,
+    'JPDB Vocabulary Export'
+)
+
+for spelling, meaning in vocab_dict.items():
+    note = genanki.Note(
+        model=my_model,
+        fields=[spelling, meaning]
+    )
+    my_deck.add_note(note)
+
+genanki.Package(my_deck).write_to_file('jpdb_vocab.apkg')
+print("Anki deck 'jpdb_vocab.apkg' created successfully.")
