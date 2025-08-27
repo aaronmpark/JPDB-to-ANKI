@@ -44,11 +44,19 @@ while url:
 
     # Find the next page URL from pagination
     next_url = None
-    pagination_div = container_div.find("div", class_="pagination without-prev") if container_div else None
+    # Try to find any pagination div
+    pagination_div = container_div.find("div", class_="pagination without-prev") \
+        or container_div.find("div", class_="pagination")
     if pagination_div:
-        a_tag = pagination_div.find("a", href=True)
-        if a_tag:
-            next_url = base_url + a_tag["href"]
+        # Find all <a> tags
+        a_tags = pagination_div.find_all("a", href=True)
+        next_a = None
+        for a in a_tags:
+            if "Next page" in a.get_text(strip=True):
+                next_a = a
+                break
+        if next_a:
+            next_url = base_url + next_a["href"]
             print(f"Next page: {next_url}")
         else:
             print("No next page link found.")
@@ -65,4 +73,4 @@ while url:
 # Print all collected vocabulary entries after all pages are processed
 print("All extracted vocabulary entries:")
 for idx, (k, v) in enumerate(vocab_dict.items(), 1):
-    print(f"{idx}. \"{k}: {v}\"")
+    print(f"{idx}. {k}: {v}")
