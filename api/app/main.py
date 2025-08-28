@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
 from typing import Optional
-import anki 
+import anki
 from fastapi.middleware.cors import CORSMiddleware
+import os
+
 app = FastAPI()
 
 app.add_middleware(
@@ -19,9 +21,15 @@ def create_deck(
         default="https://jpdb.io/anime/1495/nekopara-koneko-no-hi-no-yakusoku/vocabulary-list",
         description="JPDB vocabulary list URL"),
     filename: Optional[str] = Query(
-        default="jpdb_vocab.apkg",
+        default="test.apkg",
         description="Output Anki deck filename")
 ):
     vocab = anki.scrape_vocab(url)
     anki.create_anki_deck(vocab, filename)
-    return {"message": f"Anki deck '{filename}' created successfully.", "count": len(vocab)}
+    if not os.path.exists(filename):
+        return {"error": "File not found"}
+    return FileResponse(
+        path=filename,
+        media_type='application/octet-stream',
+        filename=filename
+    )

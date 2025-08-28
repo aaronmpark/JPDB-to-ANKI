@@ -1,18 +1,22 @@
-// In src/App.js
 import React, { useState } from 'react';
 
 function App() {
   const [url, setUrl] = useState('');
-  const [message, setMessage] = useState('');
-  const [count, setCount] = useState(null);
+  const [downloading, setDownloading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setDownloading(true);
     const params = new URLSearchParams({ url });
-    const response = await fetch(`http://localhost:8000/create_deck?${params}`);
-    const data = await response.json();
-    setMessage(data.message);
-    setCount(data.count);
+    // Create a temporary link and click it to trigger download
+    const downloadUrl = `http://localhost:8000/create_deck?${params}`;
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', 'jpdb_vocab.apkg'); // optional, for hinting filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setDownloading(false);
   };
 
   return (
@@ -25,9 +29,10 @@ function App() {
           onChange={e => setUrl(e.target.value)}
           placeholder="Enter JPDB URL"
         />
-        <button type="submit">Create Deck</button>
+        <button type="submit" disabled={downloading}>
+          {downloading ? 'Downloading...' : 'Create & Download Deck'}
+        </button>
       </form>
-      {message && <p>{message} ({count} words)</p>}
     </div>
   );
 }
