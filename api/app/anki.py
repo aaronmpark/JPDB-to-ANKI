@@ -20,6 +20,15 @@ def scrape_vocab(url):
             for entry in entries:
                 ruby_tags = entry.find_all("ruby")
                 spelling = "".join(ruby.get_text(strip=True) for ruby in ruby_tags) if ruby_tags else None
+
+                # Find the first <rt> value in the ruby tags, or "" if not found
+                rt_value = ""
+                for ruby in ruby_tags:
+                    rt_tag = ruby.find("rt")
+                    if rt_tag:
+                        rt_value = rt_tag.get_text(strip=True)
+                        break
+
                 meaning_divs = entry.find_all("div", recursive=False)
                 meaning = None
                 if meaning_divs:
@@ -33,7 +42,7 @@ def scrape_vocab(url):
                                 meaning = text
                                 break
                 if spelling and meaning:
-                    vocab_dict[spelling] = meaning
+                    vocab_dict[spelling] = [meaning, rt_value]
         # Find the next page URL from pagination
         next_url = None
         pagination_div = container_div.find("div", class_="pagination without-prev") \
@@ -57,26 +66,30 @@ def create_anki_deck(vocab_dict, filename):
     deck_id = random.randint(1, 2**32-1)
     my_model = genanki.Model(
         model_id,
-        'Simple Model',
+        'Test Model',
         fields=[
-            {'name': 'Question'},
-            {'name': 'Answer'},
+            {'name': 'Expression'},
+            {'name': 'Reading'},
+            {'name': 'Meaning'},
         ],
         templates=[
             {
-                'name': 'Card 1',
-                'qfmt': '{{Question}}',
-                'afmt': '{{FrontSide}}<hr id="answer">{{Answer}}',
+                'name': 'Recognition',
+                'qfmt': '{{Expression}}',
+                'afmt': '{{Reading}}<br>{{FrontSide}}<hr id="answer">{{Meaning}}',
             },
         ])
+    deck_name = ''
     my_deck = genanki.Deck(
         deck_id,
-        'JPDB Vocabulary Export'
+        'JPDB Vocabulary Export test2'
     )
-    for spelling, meaning in vocab_dict.items():
+    for spelling, value in vocab_dict.items():
+        meaning = value[0]
+        reading = value[1]
         note = genanki.Note(
             model=my_model,
-            fields=[spelling, meaning]
+            fields=[spelling, reading, meaning]
         )
         my_deck.add_note(note)
     genanki.Package(my_deck).write_to_file(filename)

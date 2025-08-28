@@ -18,7 +18,7 @@ app.add_middleware(
 @app.get("/create_deck")
 def create_deck(
     url: Optional[str] = Query(
-        default="https://jpdb.io/anime/1495/nekopara-koneko-no-hi-no-yakusoku/vocabulary-list",
+        default="https://jpdb.io/textbook/11/genki-an-integrated-course-in-elementary-japanese-vol-2/1/lesson-13/vocabulary-list",
         description="JPDB vocabulary list URL"),
     filename: Optional[str] = Query(
         default="test.apkg",

@@ -8,3 +8,4 @@ uvicorn
 pydantic
 sqlalchemy
 databases
+aws-lambda-powertools
