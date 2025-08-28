@@ -2,8 +2,16 @@ from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
 from typing import Optional
 import anki 
-
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/create_deck")
 def create_deck(
