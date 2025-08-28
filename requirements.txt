@@ -3,3 +3,8 @@ bs4
 time
 random
 genanki
+fastapi[standard]
+uvicorn
+pydantic
+sqlalchemy
+databases
