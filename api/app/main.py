@@ -24,8 +24,8 @@ def create_deck(
         default="test.apkg",
         description="Output Anki deck filename")
 ):
-    vocab = anki.scrape_vocab(url)
-    anki.create_anki_deck(vocab, filename)
+    vocab, deck_name = anki.scrape_vocab(url)
+    anki.create_anki_deck(vocab, filename, deck_name)
     if not os.path.exists(filename):
         return {"error": "File not found"}
     return FileResponse(

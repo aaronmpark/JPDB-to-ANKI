@@ -7,6 +7,7 @@ import random
 def scrape_vocab(url):
     base_url = "https://jpdb.io"
     vocab_dict = {}
+    deck_name = "JPDB Vocabulary Export test2"  # default
     while url:
         response = requests.get(url)
         response.raise_for_status()
@@ -14,19 +15,28 @@ def scrape_vocab(url):
         soup = BeautifulSoup(response.text, "html.parser")
         body = soup.body
         container_div = body.find("div", class_="container bugfix")
+        
+        # Get deck name from <h4> if present
+        if container_div:
+            h4 = container_div.find("h4")
+            if h4 and "Vocabulary list:" in h4.text:
+                deck_name_candidate = h4.text.split("Vocabulary list:")[-1].strip()
+                if deck_name_candidate:
+                    deck_name = deck_name_candidate
+
         vocab_list_div = container_div.find("div", class_="vocabulary-list") if container_div else None
         if vocab_list_div:
             entries = vocab_list_div.find_all("div", class_="entry")
             for entry in entries:
                 ruby_tags = entry.find_all("ruby")
-                spelling = "".join(ruby.get_text(strip=True) for ruby in ruby_tags) if ruby_tags else None
-
-                # Build reading as spelling1[rt_value1]spelling2[rt_value2]...
+                # Build spelling and reading in parallel, character by character
+                spelling = ""
                 reading_parts = []
                 for ruby in ruby_tags:
-                    # Get the base text (the text node before <rt>)
+                    # Get the base text (kanji/kana)
                     base_text = "".join([t for t in ruby.contents if isinstance(t, str)]).strip()
                     rt_tag = ruby.find("rt")
+                    spelling += base_text
                     if base_text:
                         if rt_tag:
                             reading_parts.append(f"{base_text}[{rt_tag.get_text(strip=True)}]")
@@ -67,9 +77,9 @@ def scrape_vocab(url):
         if next_url:
             time.sleep(0.5)
         url = next_url
-    return vocab_dict
+    return vocab_dict, deck_name
 
-def create_anki_deck(vocab_dict, filename):
+def create_anki_deck(vocab_dict, filename, deck_name="JPDB Vocabulary Export test2"):
     model_id = random.randint(1, 2**32-1)
     deck_id = random.randint(1, 2**32-1)
     my_model = genanki.Model(
@@ -84,21 +94,21 @@ def create_anki_deck(vocab_dict, filename):
             {
                 'name': 'Recognition',
                 'qfmt': """
-                <div style="font-size: 3em; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding-top: 2em;">
-                  {{Expression}}
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 2em;">
+                    <span style="font-size: 3em;">
+                        {{Expression}}
+                    </span>
                 </div>
                 """,
                 'afmt': """
-                {{#Reading}}
-                <div style="font-size: 3em; text-align: center; margin-bottom: 0.5em; padding-top: 2em;">
-                  {{furigana:Reading}}
-                </div>
-                {{/Reading}}
-                <div style="font-size: 3em; text-align: center;">
-                </div>
-                <hr id="answer">
-                <div style="font-size: 3em; text-align: center;">
-                  {{Meaning}}
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 2em;">
+                    <span style="font-size: 3em;">
+                        {{#Reading}}{{furigana:Reading}}{{/Reading}}
+                    </span>
+                    <hr id="answer" style="width: 100%;">
+                    <span style="font-size: 3em;">
+                        {{Meaning}}
+                    </span>
                 </div>
                 """,
             },
@@ -111,11 +121,10 @@ def create_anki_deck(vocab_dict, filename):
     )
     my_deck = genanki.Deck(
         deck_id,
-        'JPDB Vocabulary Export test2'
+        deck_name
     )
     for spelling, value in vocab_dict.items():
         meaning = value[0]
-        # Only add reading if it exists
         reading = value[1] if len(value) > 1 else ""
         note = genanki.Note(
             model=my_model,
