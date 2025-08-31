@@ -9,19 +9,19 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or specify your frontend URL
+    allow_origins=["https://aaronmpark.github.io"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET"],
     allow_headers=["*"],
 )
 
 @app.get("/create_deck")
 def create_deck(
     url: Optional[str] = Query(
-        default="https://jpdb.io/textbook/11/genki-an-integrated-course-in-elementary-japanese-vol-2/1/lesson-13/vocabulary-list",
+        default="",
         description="JPDB vocabulary list URL"),
     filename: Optional[str] = Query(
-        default="test.apkg",
+        default="",
         description="Output Anki deck filename")
 ):
     vocab, deck_name = anki.scrape_vocab(url)
