@@ -12,7 +12,7 @@ function App() {
     let safeFilename = filename.trim();
     safeFilename += '.apkg';
     const params = new URLSearchParams({ url, filename: safeFilename });
-    const downloadUrl = `http://localhost:8000/create_deck?${params}`;
+    const downloadUrl = `https://jpdb-api.onrender.com/create_deck?${params}`;
     const link = document.createElement('a');
     link.href = downloadUrl;
     link.setAttribute('download', safeFilename);
