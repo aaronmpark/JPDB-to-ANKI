@@ -7,7 +7,7 @@ import random
 def scrape_vocab(url):
     base_url = "https://jpdb.io"
     vocab_dict = {}
-    deck_name = "JPDB Vocabulary Export test2"  # default
+    deck_name = "JPDB Vocabulary Export test"
     while url:
         response = requests.get(url)
         response.raise_for_status()
@@ -79,7 +79,7 @@ def scrape_vocab(url):
         url = next_url
     return vocab_dict, deck_name
 
-def create_anki_deck(vocab_dict, filename, deck_name="JPDB Vocabulary Export test2"):
+def create_anki_deck(vocab_dict, filename, deck_name):
     model_id = random.randint(1, 2**32-1)
     deck_id = random.randint(1, 2**32-1)
     my_model = genanki.Model(
