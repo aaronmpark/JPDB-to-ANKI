@@ -5,3 +5,4 @@ Needed Updates:
 - Cross-check with reviews.json for progress
 - Make front-end look good
 - Add extra functions
+- change where api is hosted (free but kinda bad rn)
