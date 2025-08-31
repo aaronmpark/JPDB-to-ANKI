@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/JPDB-to-ANKI/static/css/main.e6c13ad2.css",
-    "main.js": "/JPDB-to-ANKI/static/js/main.3e1205f1.js",
+    "main.js": "/JPDB-to-ANKI/static/js/main.75ff0af6.js",
     "static/js/453.50415da2.chunk.js": "/JPDB-to-ANKI/static/js/453.50415da2.chunk.js",
     "index.html": "/JPDB-to-ANKI/index.html",
     "main.e6c13ad2.css.map": "/JPDB-to-ANKI/static/css/main.e6c13ad2.css.map",
-    "main.3e1205f1.js.map": "/JPDB-to-ANKI/static/js/main.3e1205f1.js.map",
+    "main.75ff0af6.js.map": "/JPDB-to-ANKI/static/js/main.75ff0af6.js.map",
     "453.50415da2.chunk.js.map": "/JPDB-to-ANKI/static/js/453.50415da2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.3e1205f1.js"
+    "static/js/main.75ff0af6.js"
   ]
 }
