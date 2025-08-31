@@ -8,17 +8,28 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setDownloading(true);
-    // Ensure .apkg extension
     let safeFilename = filename.trim();
-    safeFilename += '.apkg';
+    if (!safeFilename.toLowerCase().endsWith('.apkg')) {
+      safeFilename += '.apkg';
+    }
     const params = new URLSearchParams({ url, filename: safeFilename });
     const downloadUrl = `https://jpdb-api.onrender.com/create_deck?${params}`;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.setAttribute('download', safeFilename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    try {
+      const response = await fetch(downloadUrl);
+      if (!response.ok) throw new Error('Failed to generate deck');
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', safeFilename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
     setDownloading(false);
   };
 
