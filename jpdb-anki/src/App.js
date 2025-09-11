@@ -49,7 +49,6 @@ function App() {
                     <label htmlFor="url" className="form-label">JPDB URL</label>
                       <input
                         type="text"
-                        id="url"
                         className="form-control"
                         value={url}
                         onChange={e => setUrl(e.target.value)}
@@ -62,7 +61,6 @@ function App() {
                     <label htmlFor="filename" className="form-label">Filename</label>
                     <input
                       type="text"
-                      id="filename"
                       className="form-control"
                       value={filename}
                       onChange={e => setFilename(e.target.value)}
@@ -95,46 +93,6 @@ function App() {
           </div>
         </div>
       </div>
-      {/* <div className="mb-3">
-        <label htmlFor="url" className="form-label">JPDB URL</label>
-        <input
-          type="text"
-          value={url}
-          onChange={e => setUrl(e.target.value)}
-          placeholder="Enter JPDB URL"
-          required
-        ></input>
-      </div>
-      <div className="mb-3">
-        <label htmlFor="filename" className="form-label">Filename</label>
-        <input
-          type="text"
-          id="filename"
-          className="form-control"
-          value={filename}
-          onChange={e => setFilename(e.target.value)}
-          placeholder="example.apkg"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="btn btn-primary w-100"
-        disabled={downloading}
-      >
-        {downloading ? (
-          <>
-            <span
-              className="spinner-border spinner-border-sm me-2"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Downloading...
-            </>
-        ) : (
-          'Create & Download Deck'
-        )}
-      </button> */}
     </div>
   );
 }
