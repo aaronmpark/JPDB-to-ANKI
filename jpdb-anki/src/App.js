@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [url, setUrl] = useState('');
@@ -35,26 +36,105 @@ function App() {
 
   return (
     <div>
-      <h1>JPDB to Anki Deck Generator</h1>
-      <form onSubmit={handleSubmit}>
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6">
+            <div className="card shadow">
+              <div className="card-body">
+                <h1 className="card-title text-center mb-4">
+                  JPDB to Anki Deck Generator
+                </h1>
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3">
+                    <label htmlFor="url" className="form-label">JPDB URL</label>
+                      <input
+                        type="text"
+                        id="url"
+                        className="form-control"
+                        value={url}
+                        onChange={e => setUrl(e.target.value)}
+                        placeholder="Enter JPDB Vocabulary List URL"
+                        required
+                      />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="filename" className="form-label">Filename</label>
+                    <input
+                      type="text"
+                      id="filename"
+                      className="form-control"
+                      value={filename}
+                      onChange={e => setFilename(e.target.value)}
+                      placeholder="example.apkg"
+                      required
+                    ></input>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary w-100"
+                    disabled={downloading}
+                  >
+                    {downloading ? (
+                      <>
+                        <span
+                          className="spiner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Downloading...
+                        </>
+                    ) : (
+                      'Create & Download Deck'
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="mb-3">
+        <label htmlFor="url" className="form-label">JPDB URL</label>
         <input
           type="text"
           value={url}
           onChange={e => setUrl(e.target.value)}
           placeholder="Enter JPDB URL"
-        />
-        <br />
+          required
+        ></input>
+      </div>
+      <div className="mb-3">
+        <label htmlFor="filename" className="form-label">Filename</label>
         <input
           type="text"
+          id="filename"
+          className="form-control"
           value={filename}
           onChange={e => setFilename(e.target.value)}
-          placeholder="Enter filename"
+          placeholder="example.apkg"
+          required
         />
-        <br />
-        <button type="submit" disabled={downloading}>
-          {downloading ? 'Downloading...' : 'Create & Download Deck'}
-        </button>
-      </form>
+      </div>
+      <button
+        type="submit"
+        className="btn btn-primary w-100"
+        disabled={downloading}
+      >
+        {downloading ? (
+          <>
+            <span
+              className="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Downloading...
+            </>
+        ) : (
+          'Create & Download Deck'
+        )}
+      </button> */}
     </div>
   );
 }
