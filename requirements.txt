@@ -9,3 +9,4 @@ pydantic
 sqlalchemy
 databases
 aws-lambda-powertools
+bootstrap
